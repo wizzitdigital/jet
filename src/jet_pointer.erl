@@ -127,15 +127,18 @@ get_prop_value({path_list, [H | T]}, Json) when is_map(Json) ->
     % map, assume current path element is key in map
     case maps:find(H, Json) of
             {ok, Value} ->
+
                 get_prop_value({path_list, T}, Value);
             error ->
                 undefined
         end;
 get_prop_value({path_list, [H | T]}, Json) when is_list(Json) ->
+
     {Index, _}=string:to_integer(H),
     % list, assume current path element is index of list element
     case (Index<0) of
         true ->
+
             get_prop_value({path_list, T}, lists:nth(length(Json)+Index+1, Json));
         false ->
             get_prop_value({path_list, T}, lists:nth(Index+1, Json))
@@ -161,9 +164,11 @@ get_prop_value(PathString, Json) ->
 add_prop_value({path_list, [H | T]}, Value, Json) when is_map(Json) ->
     case (maps:is_key(H, Json)) of
         true ->
+
             maps:update(H, add_prop_value({path_list, T}, Value, maps:get(H, Json)), Json);
         false ->
             maps:put(H, add_prop_value({path_list, T}, Value, maps:new()), Json)
+
     end;
 add_prop_value({path_list, path_list}, _Value, Json) when is_list(Json) ->
     % cannot add specific array elements at specified index with this function
